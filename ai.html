@@ -1,0 +1,371 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scientific Calculator PRO - Black Edition</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000000;
+    font-family: Arial, sans-serif;
+    padding: 15px;
+}
+
+.calculator {
+    width: 460px;
+    max-width: 100%;
+    padding: 22px;
+    background: #080808;
+    border: 1px solid #292929;
+    border-radius: 22px;
+    box-shadow: 0 0 35px #ffffff15;
+}
+
+h2 {
+    text-align: center;
+    color: #ffffff;
+    letter-spacing: 4px;
+    margin-top: 5px;
+}
+
+#display {
+    width: 100%;
+    height: 80px;
+    background: #000000;
+    border: 1px solid #383838;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 28px;
+    text-align: right;
+    padding: 12px;
+    margin-bottom: 15px;
+}
+
+.mode {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #aaaaaa;
+    margin-bottom: 15px;
+}
+
+.mode button {
+    background: #252525;
+    color: white;
+    border: 1px solid #444;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 9px;
+}
+
+button {
+    height: 55px;
+    border: 1px solid #292929;
+    border-radius: 10px;
+    background: #171717;
+    color: white;
+    font-size: 17px;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+button:hover {
+    background: #383838;
+    border-color: #777777;
+    transform: scale(1.04);
+}
+
+button:active {
+    transform: scale(0.94);
+}
+
+.operator {
+    background: #303030;
+}
+
+.science {
+    background: #202020;
+}
+
+.clear {
+    background: #651b1b;
+}
+
+.equal {
+    background: #eeeeee;
+    color: #000000;
+    font-weight: bold;
+}
+
+.footer {
+    color: #666666;
+    text-align: center;
+    font-size: 12px;
+    margin-top: 18px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+
+<h2>SCIENTIFIC PRO</h2>
+
+<input id="display" value="0" readonly>
+
+<div class="mode">
+    <span>ANGLE MODE</span>
+    <button onclick="toggleMode()" id="mode">DEG</button>
+</div>
+
+<div class="buttons">
+
+<button class="clear" onclick="clearAll()">AC</button>
+<button onclick="del()">DEL</button>
+<button class="science" onclick="add('(')">(</button>
+<button class="science" onclick="add(')')">)</button>
+<button class="operator" onclick="add('/')">÷</button>
+
+<button class="science" onclick="func('sin')">SIN</button>
+<button class="science" onclick="func('cos')">COS</button>
+<button class="science" onclick="func('tan')">TAN</button>
+<button class="science" onclick="add('π')">π</button>
+<button class="operator" onclick="add('*')">×</button>
+
+<button class="science" onclick="func('asin')">ASIN</button>
+<button class="science" onclick="func('acos')">ACOS</button>
+<button class="science" onclick="func('atan')">ATAN</button>
+<button class="science" onclick="add('e')">e</button>
+<button class="operator" onclick="add('-')">−</button>
+
+<button class="science" onclick="func('sqrt')">√</button>
+<button class="science" onclick="add('^2')">x²</button>
+<button class="science" onclick="add('^')">xʸ</button>
+<button class="science" onclick="func('log')">LOG</button>
+<button class="operator" onclick="add('+')">+</button>
+
+<button onclick="add('7')">7</button>
+<button onclick="add('8')">8</button>
+<button onclick="add('9')">9</button>
+<button class="science" onclick="add('%')">%</button>
+<button class="science" onclick="func('ln')">LN</button>
+
+<button onclick="add('4')">4</button>
+<button onclick="add('5')">5</button>
+<button onclick="add('6')">6</button>
+<button class="science" onclick="func('fact')">n!</button>
+<button class="science" onclick="add('.')">.</button>
+
+<button onclick="add('1')">1</button>
+<button onclick="add('2')">2</button>
+<button onclick="add('3')">3</button>
+<button class="science" onclick="add('*-1')">±</button>
+<button class="science" onclick="add('Ans')">Ans</button>
+
+<button onclick="add('0')">0</button>
+<button class="science" onclick="add('π')">π</button>
+<button class="science" onclick="add('e')">e</button>
+<button class="equal" style="grid-column:span 2"
+onclick="calculate()">=</button>
+
+</div>
+
+<div class="footer">
+SCIENTIFIC CALCULATOR PRO | BLACK EDITION
+</div>
+
+</div>
+
+<script>
+
+const display = document.getElementById("display");
+
+let isDegree = true;
+let lastAnswer = 0;
+
+function add(value) {
+
+    if (display.value === "Error") {
+        display.value = "0";
+    }
+
+    if (display.value === "0" && /^[0-9.]$/.test(value)) {
+        display.value = value;
+    } else {
+        display.value += value;
+    }
+}
+
+function clearAll() {
+    display.value = "0";
+}
+
+function del() {
+    display.value =
+        display.value.slice(0, -1) || "0";
+}
+
+function toggleMode() {
+
+    isDegree = !isDegree;
+
+    document.getElementById("mode").textContent =
+        isDegree ? "DEG" : "RAD";
+}
+
+function func(name) {
+
+    if (display.value === "Error") return;
+
+    if (name === "fact") {
+        display.value += "!";
+    } else {
+        display.value = name + "(" + display.value + ")";
+    }
+}
+
+function calculate() {
+
+    try {
+
+        let s = display.value;
+
+        if (!/^[0-9+\-*/().%!^πeAns a-z]+$/i.test(s)) {
+            throw Error();
+        }
+
+        s = s.replace(/π/g, "Math.PI")
+             .replace(/\be\b/g, "Math.E")
+             .replace(/\bAns\b/g, "ANS");
+
+        s = s.replace(/\bANS\b/g, "(" + lastAnswer + ")");
+
+        // Trigonometric functions
+
+        s = s.replace(
+            /\b(sin|cos|tan|asin|acos|atan)\(/g,
+            (match, f) => "Math." + f + "("
+        );
+
+        if (isDegree) {
+
+            s = s.replace(
+                /Math\.(sin|cos|tan)\(/g,
+                "Math.$1(Math.PI/180*"
+            );
+
+            s = s.replace(
+                /Math\.(asin|acos|atan)\(/g,
+                "180/Math.PI*Math.$1("
+            );
+        }
+
+        // Scientific functions
+
+        s = s.replace(/\bsqrt\(/g, "Math.sqrt(")
+             .replace(/\blog\(/g, "Math.log10(")
+             .replace(/\bln\(/g, "Math.log(");
+
+        // Powers
+
+        s = s.replace(/\^/g, "**");
+
+        // Factorials
+
+        s = s.replace(
+            /(\d+(?:\.\d+)?|\))!/g,
+            "FACT($1)"
+        );
+
+        // Percentages
+
+        s = s.replace(
+            /(\d+(?:\.\d+)?)%/g,
+            "($1/100)"
+        );
+
+        // Factorial calculation
+
+        const FACT = function(n) {
+
+            if (!Number.isInteger(n) || n < 0 || n > 170) {
+                throw Error();
+            }
+
+            let result = 1;
+
+            for (let i = 2; i <= n; i++) {
+                result *= i;
+            }
+
+            return result;
+        };
+
+        // Calculate result
+
+        let result = Function(
+            "FACT",
+            '"use strict"; return (' + s + ')'
+        )(FACT);
+
+        if (!Number.isFinite(result)) {
+            throw Error();
+        }
+
+        lastAnswer = result;
+
+        display.value =
+            Number(result.toPrecision(12)).toString();
+
+    } catch {
+
+        display.value = "Error";
+
+    }
+}
+
+// Keyboard support
+
+document.addEventListener("keydown", function(event) {
+
+    if ("0123456789+-*/().%^".includes(event.key)) {
+        add(event.key);
+    }
+
+    else if (event.key === "Enter" || event.key === "=") {
+        calculate();
+    }
+
+    else if (event.key === "Backspace") {
+        del();
+    }
+
+    else if (event.key === "Escape") {
+        clearAll();
+    }
+
+});
+
+</script>
+
+</body>
+</html>
